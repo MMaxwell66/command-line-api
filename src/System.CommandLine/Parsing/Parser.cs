@@ -39,6 +39,7 @@ namespace System.CommandLine.Parsing
         {
             arguments ??= Array.Empty<string>();
 
+            // NOTE(JJ): Handles bundle options, "--", ':' & '=', etc.
             arguments.Tokenize(
                 Configuration,
                 inferRootCommand: rawInput is not null,

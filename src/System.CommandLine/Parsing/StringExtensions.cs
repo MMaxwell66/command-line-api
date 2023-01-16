@@ -68,6 +68,7 @@ namespace System.CommandLine.Parsing
             return (null, rawAlias);
         }
 
+        // TODO(JJ): [perf] How could this avoid JITting?
         // this method is not returning a Value Tuple or a dedicated type to avoid JITting
         internal static void Tokenize(
             this IReadOnlyList<string> args,
@@ -98,6 +99,7 @@ namespace System.CommandLine.Parsing
                     ? configuration.RootCommand.Name
                     : args[i];
 
+                // NOTE(JJ): If found, all args will be pushed as arguments.
                 if (foundDoubleDash)
                 {
                     tokenList.Add(CommandArgument(arg, currentCommand!));
@@ -122,6 +124,7 @@ namespace System.CommandLine.Parsing
                         arg[arg.Length - 1] == ']')
                     {
                         tokenList.Add(Directive(arg));
+                        // NOTE(JJ): Allow multiple directives.
                         continue;
                     }
 
@@ -173,6 +176,7 @@ namespace System.CommandLine.Parsing
                                 Command cmd = (Command)token.Symbol!;
                                 if (cmd != currentCommand)
                                 {
+                                    // NOTE(JJ): Why root? Can we switch to other command than switch back to root?
                                     if (cmd != configuration.RootCommand)
                                     {
                                         knownTokens = cmd.ValidTokens();
@@ -263,6 +267,7 @@ namespace System.CommandLine.Parsing
                             }
 
                             tokenList.Add(new Token(found.Value, found.Type, found.Symbol, argumentIndex));
+                            // NOTE(JJ): Greedy option effert.
                             if (i != alias.Length - 1 && ((Option)found.Symbol!).IsGreedy)
                             {
                                 int index = i + 1;
@@ -454,6 +459,7 @@ namespace System.CommandLine.Parsing
                     Option option = options[childIndex];
                     foreach (string childAlias in option.Aliases)
                     {
+                        // NOTE(JJ): Priority logic relate to global
                         if (!option.IsGlobal || !tokens.ContainsKey(childAlias))
                         {
                             tokens.Add(childAlias, new Token(childAlias, TokenType.Option, option, Token.ImplicitPosition));
@@ -475,6 +481,7 @@ namespace System.CommandLine.Parsing
                         {
                             for (var i = 0; i < parentCommand.Options.Count; i++)
                             {
+                                // NOTE(JJ): Priority logic relate to global
                                 Option option = parentCommand.Options[i];
                                 if (option.IsGlobal)
                                 {
