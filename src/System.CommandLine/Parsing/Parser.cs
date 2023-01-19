@@ -50,6 +50,7 @@ namespace System.CommandLine.Parsing
                 tokens,
                 Configuration);
 
+            // NOTE(JJ): Parse linear tokens into syntax node tree
             operation.Parse();
 
             var visitor = new ParseResultVisitor(

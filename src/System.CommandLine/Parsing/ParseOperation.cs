@@ -96,6 +96,7 @@ namespace System.CommandLine.Parsing
         {
             while (More(out TokenType currentTokenType) && currentTokenType == TokenType.Argument)
             {
+                // TODO(JJ): What is the purpose of currentArgumentIndex? For positional argument?
                 while (commandNode.Command.HasArguments && currentArgumentIndex < commandNode.Command.Arguments.Count)
                 {
                     Argument argument = commandNode.Command.Arguments[currentArgumentIndex];
@@ -175,6 +176,7 @@ namespace System.CommandLine.Parsing
                         argument,
                         optionNode));
 
+                // NOTE(JJ): Assertion: argumentCount == contiguousToken?
                 argumentCount++;
 
                 contiguousTokens++;
